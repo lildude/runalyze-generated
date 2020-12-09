@@ -1,0 +1,580 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Runalyze Personal API",
+    "description": "Go client for the [Runalyze Personal API](https://runalyze.com/help/article/personal-api).",
+    "version": "1.0.0"
+  },
+  "servers": [{"url": "https://runalyze.com"}],
+  "paths": {
+    "/api/v1/activities/uploads": {
+      "post": {
+        "tags": [
+          "Activity Upload"
+        ],
+        "operationId": "UploadActivity",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "title": {
+                    "description": "Activity title",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "Activity note",
+                    "type": "string"
+                  },
+                  "route": {
+                    "description": "Activity route",
+                    "type": "string"
+                  },
+                  "file": {
+                    "description": "Activity file (*.fit, *.tcx, *.gpx, *.ttbin)",
+                    "type": "file",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Activity uploaded successfully"
+          },
+          "400": {
+            "description": "Unknown error | No file provided"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server Error"
+          },
+          "503": {
+            "description": "Server Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/activities/uploads/{id}": {
+      "get": {
+        "tags": [
+          "Activity Upload"
+        ],
+        "operationId": "GetActivityByID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/metrics": {
+      "post": {
+        "tags": [
+          "Health Metrics"
+        ],
+        "summary": "Creates bulk entries of all existing metrics",
+        "operationId": "CreateMetrics",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "sleep": {
+                    "items": {
+                      "required": [
+                        "date_time",
+                        "duration"
+                      ],
+                      "properties": {
+                        "date_time": {
+                          "description": "Sleep Start Time",
+                          "type": "string",
+                          "example": "2020-10-01T23:00:00Z"
+                        },
+                        "duration": {
+                          "description": "Sleep duration in minutes",
+                          "type": "number",
+                          "default": "0",
+                          "maximum": "1440",
+                          "minimum": "1",
+                          "example": 460
+                        },
+                        "rem_duration": {
+                          "description": "REM duration in minutes",
+                          "type": "number",
+                          "default": "0",
+                          "maximum": "1440",
+                          "minimum": "0",
+                          "example": 80
+                        },
+                        "light_sleep_duration": {
+                          "description": "Light Sleep duration in Minutes",
+                          "type": "number",
+                          "default": "0",
+                          "maximum": "1440",
+                          "minimum": "0",
+                          "example": 70
+                        },
+                        "deep_sleep_duration": {
+                          "description": "Deep Sleep duration in minutes",
+                          "type": "number",
+                          "default": "0",
+                          "maximum": "1440",
+                          "minimum": "0",
+                          "example": 70
+                        },
+                        "awake_duration": {
+                          "description": "Awake time in minutes",
+                          "type": "number",
+                          "default": "0",
+                          "maximum": "1440",
+                          "minimum": "0",
+                          "example": 70
+                        },
+                        "quality": {
+                          "description": "Sleep quality between 0 and 10",
+                          "type": "number",
+                          "maximum": "10",
+                          "minimum": "0",
+                          "example": 8
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "bodyComposition": {
+                    "items": {
+                      "properties": {
+                        "...": {
+                          "description": "Date/Time",
+                          "type": "string",
+                          "example": "Take a look at the individual schemas for this data type"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "bloodPressure": {
+                    "items": {
+                      "properties": {
+                        "...": {
+                          "description": "Date/Time",
+                          "type": "string",
+                          "example": "Take a look at the individual schemas for this data type"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "heartRateRest": {
+                    "items": {
+                      "properties": {
+                        "...": {
+                          "description": "Date/Time",
+                          "type": "string",
+                          "example": "Take a look at the individual schemas for this data type"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "heartRateMax": {
+                    "items": {
+                      "properties": {
+                        "...": {
+                          "description": "Date/Time",
+                          "type": "string",
+                          "example": "Take a look at the individual schemas for this data type"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "mental": {
+                    "items": {
+                      "properties": {
+                        "...": {
+                          "description": "Date/Time",
+                          "type": "string",
+                          "example": "Take a look at the individual schemas for this data type"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/metrics/bloodPressure": {
+      "post": {
+        "tags": [
+          "Health Metrics"
+        ],
+        "summary": "Creates a new blood pressure entry",
+        "operationId": "CreateBloodPressure",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "date_time",
+                  "systolic",
+                  "diastolic"
+                ],
+                "properties": {
+                  "date_time": {
+                    "description": "Date/Time",
+                    "type": "string",
+                    "example": "2020-10-01T12:00:00Z"
+                  },
+                  "systolic": {
+                    "description": "Systolic in mmHg",
+                    "type": "integer",
+                    "maximum": "255",
+                    "minimum": "1",
+                    "example": 120
+                  },
+                  "diastolic": {
+                    "description": "Diastolic in mmHg",
+                    "type": "integer",
+                    "maximum": "255",
+                    "minimum": "1",
+                    "example": 80
+                  },
+                  "heart_rate": {
+                    "description": "Heart Rate in bpm",
+                    "type": "integer",
+                    "maximum": "255",
+                    "minimum": "20",
+                    "example": 70
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/metrics/bodyComposition": {
+      "post": {
+        "tags": [
+          "Health Metrics"
+        ],
+        "summary": "Creates a new body composition entry",
+        "operationId": "CreateBodyComposition",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "date_time",
+                  "weight"
+                ],
+                "properties": {
+                  "date_time": {
+                    "description": "Date/Time",
+                    "type": "string",
+                    "example": "2020-10-01T12:00:00Z"
+                  },
+                  "weight": {
+                    "description": "Weight in kg",
+                    "type": "float",
+                    "example": 80
+                  },
+                  "fat_percentage": {
+                    "description": "Fat Percentage",
+                    "type": "float",
+                    "example": 20
+                  },
+                  "water_percentage": {
+                    "description": "Water Percentage",
+                    "type": "float",
+                    "example": 60
+                  },
+                  "muscle_percentage": {
+                    "description": "Muscle Percentage",
+                    "type": "float",
+                    "example": 40
+                  },
+                  "bone_percentage": {
+                    "description": "Bone Percentage",
+                    "type": "float",
+                    "example": 15
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/metrics/sleep": {
+      "post": {
+        "tags": [
+          "Health Metrics"
+        ],
+        "summary": "Creates a new sleeping entry",
+        "operationId": "CreateSleep",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "starttime",
+                  "duration"
+                ],
+                "properties": {
+                  "date_time": {
+                    "description": "Sleep Start Time",
+                    "type": "string",
+                    "example": "2020-10-01T23:00:00Z (ISO_8601)"
+                  },
+                  "duration": {
+                    "description": "Sleep duration in minutes",
+                    "type": "integer",
+                    "default": "0",
+                    "maximum": "1440",
+                    "minimum": "1",
+                    "example": 460
+                  },
+                  "rem_duration": {
+                    "description": "REM duration in minutes",
+                    "type": "integer",
+                    "default": "0",
+                    "maximum": "1440",
+                    "minimum": "0",
+                    "example": 80
+                  },
+                  "light_sleep_duration": {
+                    "description": "Light Sleep duration in Minutes",
+                    "type": "integer",
+                    "default": "0",
+                    "maximum": "1440",
+                    "minimum": "0",
+                    "example": 70
+                  },
+                  "deep_sleep_duration": {
+                    "description": "Deep Sleep duration in minutes",
+                    "type": "integer",
+                    "default": "0",
+                    "maximum": "1440",
+                    "minimum": "0",
+                    "example": 70
+                  },
+                  "awake_duration": {
+                    "description": "Awake time in minutes",
+                    "type": "integer",
+                    "default": "0",
+                    "maximum": "1440",
+                    "minimum": "0",
+                    "example": 70
+                  },
+                  "quality": {
+                    "description": "Sleep quality between 0 and 10",
+                    "type": "integer",
+                    "maximum": "10",
+                    "minimum": "0",
+                    "example": 8
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/metrics/heartRateMax": {
+      "post": {
+        "tags": [
+          "Health Metrics"
+        ],
+        "summary": "Creates a new maximum heart rate entry",
+        "operationId": "CreateHeartRateMax",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "date_time",
+                  "heart_rate"
+                ],
+                "properties": {
+                  "date_time": {
+                    "description": "Only date will be stored",
+                    "type": "string",
+                    "example": "2020-10-01T23:00:00Z"
+                  },
+                  "heart_rate": {
+                    "description": "Heart Rate in bpm",
+                    "type": "integer",
+                    "maximum": "255",
+                    "minimum": "100",
+                    "example": 200
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/metrics/heartRateRest": {
+      "post": {
+        "tags": [
+          "Health Metrics"
+        ],
+        "summary": "Creates a new resting heart rate entry",
+        "operationId": "CreateHeartRateRest",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "date_time",
+                  "heart_rate"
+                ],
+                "properties": {
+                  "date_time": {
+                    "description": "Only date will be stored",
+                    "type": "string",
+                    "example": "2020-10-01T23:00:00Z"
+                  },
+                  "heart_rate": {
+                    "description": "Heart Rate in bpm",
+                    "type": "integer",
+                    "maximum": "160",
+                    "minimum": "20",
+                    "example": 70
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/metrics/mental": {
+      "post": {
+        "tags": [
+          "Health Metrics"
+        ],
+        "summary": "Creates a new mental state entry",
+        "operationId": "CreateMental",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "date_time"
+                ],
+                "properties": {
+                  "date_time": {
+                    "description": "Only date will be stored",
+                    "type": "string",
+                    "example": "2020-10-01T23:00:00Z"
+                  },
+                  "fatigue": {
+                    "description": "Fatigue between 0 and 10",
+                    "type": "integer",
+                    "maximum": "10",
+                    "minimum": "0",
+                    "example": 5
+                  },
+                  "stress": {
+                    "description": "Stress between 0 and 10",
+                    "type": "integer",
+                    "maximum": "10",
+                    "minimum": "0",
+                    "example": 5
+                  },
+                  "mood": {
+                    "description": "Mood between 0 and 10",
+                    "type": "integer",
+                    "maximum": "10",
+                    "minimum": 0,
+                    "example": 9
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    }
+  }
+}
