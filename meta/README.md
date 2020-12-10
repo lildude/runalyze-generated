@@ -24,7 +24,7 @@ $ echo '{"packageName":"runalyze"}' > meta/config.json
 1. Generate the Go library code:
 
 ```console
-$ swagger-codegen generate --input-spec meta/runalyze.json --config meta/config.json --lang go --output .
+$ openapi-generator generate --input-spec meta/runalyze.json --config meta/config.json --generator-name go --output .
 ```
 
 1. Append this README to the end of the generated README:

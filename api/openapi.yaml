@@ -1,0 +1,591 @@
+openapi: 3.0.0
+info:
+  description: Go client for the [Runalyze Personal API](https://runalyze.com/help/article/personal-api).
+  title: Runalyze Personal API
+  version: 1.0.0
+servers:
+- url: https://runalyze.com
+paths:
+  /api/v1/activities/uploads:
+    post:
+      operationId: UploadActivity
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object'
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                title:
+                  description: Activity title
+                  type: string
+                note:
+                  description: Activity note
+                  type: string
+                route:
+                  description: Activity route
+                  type: string
+                file:
+                  description: Activity file (*.fit, *.tcx, *.gpx, *.ttbin)
+                  items:
+                    format: binary
+                    type: string
+                  type: array
+              required:
+              - file
+              type: object
+      responses:
+        "201":
+          description: Activity uploaded successfully
+        "400":
+          description: Unknown error | No file provided
+        "401":
+          description: Unauthorized
+        "500":
+          description: Server Error
+        "503":
+          description: Server Unavailable
+      tags:
+      - Activity Upload
+  /api/v1/activities/uploads/{id}:
+    get:
+      operationId: GetActivityByID
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        default: {}
+      tags:
+      - Activity Upload
+  /api/v1/metrics:
+    post:
+      operationId: CreateMetrics
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object_1'
+        content:
+          application/json:
+            schema:
+              properties:
+                sleep:
+                  items:
+                    $ref: '#/components/schemas/_api_v1_metrics_sleep'
+                  type: array
+                bodyComposition:
+                  items:
+                    $ref: '#/components/schemas/_api_v1_metrics_bodyComposition'
+                  type: array
+                bloodPressure:
+                  items:
+                    $ref: '#/components/schemas/_api_v1_metrics_bodyComposition'
+                  type: array
+                heartRateRest:
+                  items:
+                    $ref: '#/components/schemas/_api_v1_metrics_bodyComposition'
+                  type: array
+                heartRateMax:
+                  items:
+                    $ref: '#/components/schemas/_api_v1_metrics_bodyComposition'
+                  type: array
+                mental:
+                  items:
+                    $ref: '#/components/schemas/_api_v1_metrics_bodyComposition'
+                  type: array
+              type: object
+        required: true
+      responses:
+        default: {}
+      summary: Creates bulk entries of all existing metrics
+      tags:
+      - Health Metrics
+  /api/v1/metrics/bloodPressure:
+    post:
+      operationId: CreateBloodPressure
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object_2'
+        content:
+          application/json:
+            schema:
+              properties:
+                date_time:
+                  description: Date/Time
+                  example: 2020-10-01T12:00:00Z
+                  type: string
+                systolic:
+                  description: Systolic in mmHg
+                  example: 120
+                  type: integer
+                diastolic:
+                  description: Diastolic in mmHg
+                  example: 80
+                  type: integer
+                heart_rate:
+                  description: Heart Rate in bpm
+                  example: 70
+                  type: integer
+              required:
+              - date_time
+              - diastolic
+              - systolic
+              type: object
+        required: true
+      responses:
+        default: {}
+      summary: Creates a new blood pressure entry
+      tags:
+      - Health Metrics
+  /api/v1/metrics/bodyComposition:
+    post:
+      operationId: CreateBodyComposition
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object_3'
+        content:
+          application/json:
+            schema:
+              properties:
+                date_time:
+                  description: Date/Time
+                  example: 2020-10-01T12:00:00Z
+                  type: string
+                weight:
+                  description: Weight in kg
+                  example: 80
+                  type: float
+                fat_percentage:
+                  description: Fat Percentage
+                  example: 20
+                  type: float
+                water_percentage:
+                  description: Water Percentage
+                  example: 60
+                  type: float
+                muscle_percentage:
+                  description: Muscle Percentage
+                  example: 40
+                  type: float
+                bone_percentage:
+                  description: Bone Percentage
+                  example: 15
+                  type: float
+              required:
+              - date_time
+              - weight
+              type: object
+        required: true
+      responses:
+        default: {}
+      summary: Creates a new body composition entry
+      tags:
+      - Health Metrics
+  /api/v1/metrics/sleep:
+    post:
+      operationId: CreateSleep
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object_4'
+        content:
+          application/json:
+            schema:
+              properties:
+                date_time:
+                  description: Sleep Start Time
+                  example: 2020-10-01T23:00:00Z (ISO_8601)
+                  type: string
+                duration:
+                  description: Sleep duration in minutes
+                  example: 460
+                  type: integer
+                rem_duration:
+                  description: REM duration in minutes
+                  example: 80
+                  type: integer
+                light_sleep_duration:
+                  description: Light Sleep duration in Minutes
+                  example: 70
+                  type: integer
+                deep_sleep_duration:
+                  description: Deep Sleep duration in minutes
+                  example: 70
+                  type: integer
+                awake_duration:
+                  description: Awake time in minutes
+                  example: 70
+                  type: integer
+                quality:
+                  description: Sleep quality between 0 and 10
+                  example: 8
+                  type: integer
+              required:
+              - duration
+              - starttime
+              type: object
+        required: true
+      responses:
+        default: {}
+      summary: Creates a new sleeping entry
+      tags:
+      - Health Metrics
+  /api/v1/metrics/heartRateMax:
+    post:
+      operationId: CreateHeartRateMax
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object_5'
+        content:
+          application/json:
+            schema:
+              properties:
+                date_time:
+                  description: Only date will be stored
+                  example: 2020-10-01T23:00:00Z
+                  type: string
+                heart_rate:
+                  description: Heart Rate in bpm
+                  example: 200
+                  type: integer
+              required:
+              - date_time
+              - heart_rate
+              type: object
+        required: true
+      responses:
+        default: {}
+      summary: Creates a new maximum heart rate entry
+      tags:
+      - Health Metrics
+  /api/v1/metrics/heartRateRest:
+    post:
+      operationId: CreateHeartRateRest
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object_6'
+        content:
+          application/json:
+            schema:
+              properties:
+                date_time:
+                  description: Only date will be stored
+                  example: 2020-10-01T23:00:00Z
+                  type: string
+                heart_rate:
+                  description: Heart Rate in bpm
+                  example: 70
+                  type: integer
+              required:
+              - date_time
+              - heart_rate
+              type: object
+        required: true
+      responses:
+        default: {}
+      summary: Creates a new resting heart rate entry
+      tags:
+      - Health Metrics
+  /api/v1/metrics/mental:
+    post:
+      operationId: CreateMental
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object_7'
+        content:
+          application/json:
+            schema:
+              properties:
+                date_time:
+                  description: Only date will be stored
+                  example: 2020-10-01T23:00:00Z
+                  type: string
+                fatigue:
+                  description: Fatigue between 0 and 10
+                  example: 5
+                  type: integer
+                stress:
+                  description: Stress between 0 and 10
+                  example: 5
+                  type: integer
+                mood:
+                  description: Mood between 0 and 10
+                  example: 9
+                  minimum: 0
+                  type: integer
+              required:
+              - date_time
+              type: object
+        required: true
+      responses:
+        default: {}
+      summary: Creates a new mental state entry
+      tags:
+      - Health Metrics
+components:
+  requestBodies:
+    inline_object_1:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_object_1'
+      required: true
+    inline_object:
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/inline_object'
+    inline_object_7:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_object_7'
+      required: true
+    inline_object_6:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_object_6'
+      required: true
+    inline_object_5:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_object_5'
+      required: true
+    inline_object_4:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_object_4'
+      required: true
+    inline_object_3:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_object_3'
+      required: true
+    inline_object_2:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_object_2'
+      required: true
+  schemas:
+    inline_object_1:
+      properties:
+        sleep:
+          items:
+            $ref: '#/components/schemas/_api_v1_metrics_sleep'
+          type: array
+        bodyComposition:
+          items:
+            $ref: '#/components/schemas/_api_v1_metrics_bodyComposition'
+          type: array
+        bloodPressure:
+          items:
+            $ref: '#/components/schemas/_api_v1_metrics_bodyComposition'
+          type: array
+        heartRateRest:
+          items:
+            $ref: '#/components/schemas/_api_v1_metrics_bodyComposition'
+          type: array
+        heartRateMax:
+          items:
+            $ref: '#/components/schemas/_api_v1_metrics_bodyComposition'
+          type: array
+        mental:
+          items:
+            $ref: '#/components/schemas/_api_v1_metrics_bodyComposition'
+          type: array
+      type: object
+    _api_v1_metrics_bodyComposition:
+      properties:
+        "...":
+          description: Date/Time
+          example: Take a look at the individual schemas for this data type
+          type: string
+    inline_object:
+      properties:
+        title:
+          description: Activity title
+          type: string
+        note:
+          description: Activity note
+          type: string
+        route:
+          description: Activity route
+          type: string
+        file:
+          description: Activity file (*.fit, *.tcx, *.gpx, *.ttbin)
+          items:
+            format: binary
+            type: string
+          type: array
+      required:
+      - file
+      type: object
+    inline_object_7:
+      properties:
+        date_time:
+          description: Only date will be stored
+          example: 2020-10-01T23:00:00Z
+          type: string
+        fatigue:
+          description: Fatigue between 0 and 10
+          example: 5
+          type: integer
+        stress:
+          description: Stress between 0 and 10
+          example: 5
+          type: integer
+        mood:
+          description: Mood between 0 and 10
+          example: 9
+          minimum: 0
+          type: integer
+      required:
+      - date_time
+      type: object
+    inline_object_6:
+      properties:
+        date_time:
+          description: Only date will be stored
+          example: 2020-10-01T23:00:00Z
+          type: string
+        heart_rate:
+          description: Heart Rate in bpm
+          example: 70
+          type: integer
+      required:
+      - date_time
+      - heart_rate
+      type: object
+    inline_object_5:
+      properties:
+        date_time:
+          description: Only date will be stored
+          example: 2020-10-01T23:00:00Z
+          type: string
+        heart_rate:
+          description: Heart Rate in bpm
+          example: 200
+          type: integer
+      required:
+      - date_time
+      - heart_rate
+      type: object
+    inline_object_4:
+      properties:
+        date_time:
+          description: Sleep Start Time
+          example: 2020-10-01T23:00:00Z (ISO_8601)
+          type: string
+        duration:
+          description: Sleep duration in minutes
+          example: 460
+          type: integer
+        rem_duration:
+          description: REM duration in minutes
+          example: 80
+          type: integer
+        light_sleep_duration:
+          description: Light Sleep duration in Minutes
+          example: 70
+          type: integer
+        deep_sleep_duration:
+          description: Deep Sleep duration in minutes
+          example: 70
+          type: integer
+        awake_duration:
+          description: Awake time in minutes
+          example: 70
+          type: integer
+        quality:
+          description: Sleep quality between 0 and 10
+          example: 8
+          type: integer
+      required:
+      - duration
+      - starttime
+      type: object
+    inline_object_3:
+      properties:
+        date_time:
+          description: Date/Time
+          example: 2020-10-01T12:00:00Z
+          type: string
+        weight:
+          description: Weight in kg
+          example: 80
+          type: float
+        fat_percentage:
+          description: Fat Percentage
+          example: 20
+          type: float
+        water_percentage:
+          description: Water Percentage
+          example: 60
+          type: float
+        muscle_percentage:
+          description: Muscle Percentage
+          example: 40
+          type: float
+        bone_percentage:
+          description: Bone Percentage
+          example: 15
+          type: float
+      required:
+      - date_time
+      - weight
+      type: object
+    _api_v1_metrics_sleep:
+      properties:
+        date_time:
+          description: Sleep Start Time
+          example: 2020-10-01T23:00:00Z
+          type: string
+        duration:
+          description: Sleep duration in minutes
+          example: 460
+          type: number
+        rem_duration:
+          description: REM duration in minutes
+          example: 80
+          type: number
+        light_sleep_duration:
+          description: Light Sleep duration in Minutes
+          example: 70
+          type: number
+        deep_sleep_duration:
+          description: Deep Sleep duration in minutes
+          example: 70
+          type: number
+        awake_duration:
+          description: Awake time in minutes
+          example: 70
+          type: number
+        quality:
+          description: Sleep quality between 0 and 10
+          example: 8
+          type: number
+      required:
+      - date_time
+      - duration
+    inline_object_2:
+      properties:
+        date_time:
+          description: Date/Time
+          example: 2020-10-01T12:00:00Z
+          type: string
+        systolic:
+          description: Systolic in mmHg
+          example: 120
+          type: integer
+        diastolic:
+          description: Diastolic in mmHg
+          example: 80
+          type: integer
+        heart_rate:
+          description: Heart Rate in bpm
+          example: 70
+          type: integer
+      required:
+      - date_time
+      - diastolic
+      - systolic
+      type: object
